@@ -4,21 +4,13 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class PredictionRequest(BaseModel):
     """Request body for code-risk classification."""
 
-    code: str = Field(..., min_length=1, description="Source-code snippet to classify.")
-
-    @field_validator("code")
-    @classmethod
-    def code_must_not_be_blank(cls, value: str) -> str:
-        """Reject empty or whitespace-only snippets."""
-        if not value.strip():
-            raise ValueError("code must not be blank")
-        return value
+    code: str = Field(..., description="Source-code snippet to classify.")
 
 
 class PredictionResponse(BaseModel):

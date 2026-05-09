@@ -1,4 +1,4 @@
-.PHONY: install test lint format train-tf train-transformer evaluate clean
+.PHONY: install test lint format train-tf train-transformer evaluate api clean
 
 install:
 	python -m pip install --upgrade pip
@@ -21,6 +21,9 @@ train-transformer:
 
 evaluate:
 	python -m src.evaluate --test data/processed/test.csv --model-dir models/codebert-bug-classifier --model-type transformer
+
+api:
+	uvicorn app.main:app --host 0.0.0.0 --port 8000
 
 clean:
 	python -c "import pathlib, shutil; [shutil.rmtree(p, ignore_errors=True) for p in ['__pycache__', '.pytest_cache', '.ruff_cache', '.mypy_cache', 'htmlcov', 'dist', 'build']]; [shutil.rmtree(p, ignore_errors=True) for p in pathlib.Path('.').rglob('__pycache__')]; [p.unlink() for p in pathlib.Path('.').rglob('*.pyc')]"
