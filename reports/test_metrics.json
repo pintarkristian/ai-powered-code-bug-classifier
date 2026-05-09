@@ -1,0 +1,26 @@
+{
+  "accuracy": 0.6050698016164585,
+  "confusion_matrix": [
+    [
+      1161,
+      321
+    ],
+    [
+      754,
+      486
+    ]
+  ],
+  "f1": 0.4748412310698583,
+  "labels": [
+    0,
+    1
+  ],
+  "model_dir": "models\\codebert-bug-classifier",
+  "model_type": "transformer",
+  "num_examples": 2722,
+  "pr_auc": 0.6452066460194307,
+  "precision": 0.6022304832713755,
+  "recall": 0.3919354838709677,
+  "roc_auc": 0.6521927103739498,
+  "test_path": "data\\processed\\test.csv"
+}
