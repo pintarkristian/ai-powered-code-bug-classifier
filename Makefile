@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: install test lint format clean
+.PHONY: install test lint format train-tf clean
 
 install:
 	pip install --upgrade pip
@@ -14,6 +14,9 @@ lint:
 
 format:
 	black src app tests
+
+train-tf:
+	python -m src.train_tensorflow_baseline --train data/processed/train.csv --valid data/processed/valid.csv --output models/tensorflow_baseline.keras --epochs 3 --batch-size 16
 
 clean:
 	rm -rf __pycache__ .pytest_cache .ruff_cache .mypy_cache .coverage htmlcov dist build *.egg-info
