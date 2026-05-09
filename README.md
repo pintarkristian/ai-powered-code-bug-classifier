@@ -1,4 +1,4 @@
-# AI Powered Code Bug Classifier
+# AI-Powered Code Bug Classifier
 
 > An end-to-end Machine Learning and AI project that classifies source-code snippets as **clean** or **potentially buggy/risky** using Pandas, TensorFlow, PyTorch, Hugging Face Transformers, FastAPI, Docker, and automated testing.
 
@@ -13,7 +13,7 @@
 
 ## 1. Project Overview
 
-**AI Powered Code Bug Classifier** is a portfolio-ready Python project designed to demonstrate practical skills in Machine Learning, Deep Learning, AI, MLOps, API development, Docker, and software engineering best practices.
+**AI-Powered Code Bug Classifier** is a portfolio-ready Python project designed to demonstrate practical skills in Machine Learning, Deep Learning, AI, MLOps, API development, Docker, and software engineering best practices.
 
 The goal of this project is to build a system that receives a source-code snippet and predicts whether the snippet is likely to be **clean** or **potentially buggy/risky**. The project compares two modeling approaches:
 
@@ -116,85 +116,6 @@ After training, the best model can be loaded by a FastAPI application. The API r
 | Code quality | black, ruff |
 | Containerization | Docker, Docker Compose |
 | CI/CD | GitHub Actions |
-
----
-
-## Quickstart: Local Development Setup
-
-These commands set up a local Python environment, install dependencies, and run the basic development checks.
-
-### 1. Create a Python virtual environment
-
-```bash
-python -m venv .venv
-```
-
-Activate it on macOS/Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Activate it on Windows PowerShell:
-
-```powershell
-.venv\Scripts\Activate.ps1
-```
-
-### 2. Install dependencies
-
-```bash
-pip install --upgrade pip
-pip install -r requirements.txt
-```
-
-Or use the Makefile:
-
-```bash
-make install
-```
-
-### 3. Run tests
-
-```bash
-make test
-```
-
-Equivalent command:
-
-```bash
-pytest tests -v
-```
-
-### 4. Run linting
-
-```bash
-make lint
-```
-
-Equivalent command:
-
-```bash
-ruff check src app tests
-```
-
-### 5. Run formatting
-
-```bash
-make format
-```
-
-Equivalent command:
-
-```bash
-black src app tests
-```
-
-### 6. Clean generated files
-
-```bash
-make clean
-```
 
 ---
 
@@ -1380,5 +1301,5 @@ Created as a Python Machine Learning and AI portfolio project.
 Recommended repository name:
 
 ```text
-ai-powered-code-bug-classifier
+ai-code-bug-classifier
 ```

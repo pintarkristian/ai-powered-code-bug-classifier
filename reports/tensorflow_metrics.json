@@ -1,0 +1,36 @@
+{
+  "best_validation": {
+    "best_val_accuracy": 0.609110951423645,
+    "best_val_auc": 0.6707870960235596,
+    "best_val_loss": 0.642225980758667,
+    "best_val_precision": 0.5618846416473389,
+    "best_val_recall": 0.6879032254219055
+  },
+  "epochs_ran": 3,
+  "final": {
+    "accuracy": 0.7945161461830139,
+    "auc": 0.8871272206306458,
+    "loss": 0.4168391525745392,
+    "precision": 0.7715938687324524,
+    "recall": 0.7798386812210083,
+    "val_accuracy": 0.5991917848587036,
+    "val_auc": 0.6599158048629761,
+    "val_loss": 0.7535371780395508,
+    "val_precision": 0.5478484034538269,
+    "val_recall": 0.6879032254219055
+  },
+  "model_path": "models\\tensorflow_baseline.keras",
+  "parameters": {
+    "batch_size": 16,
+    "epochs": 3,
+    "max_tokens": 20000,
+    "seed": 42,
+    "sequence_length": 256,
+    "tensorflow_version": "2.21.0"
+  },
+  "status": "trained",
+  "train_path": "data\\processed\\train.csv",
+  "train_rows": 21773,
+  "valid_path": "data\\processed\\valid.csv",
+  "valid_rows": 2722
+}
