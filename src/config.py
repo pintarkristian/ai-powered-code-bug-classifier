@@ -18,9 +18,9 @@ class Settings:
     data_dir: Path = project_root / "data"
     raw_data_dir: Path = data_dir / "raw"
     processed_data_dir: Path = data_dir / "processed"
-    model_dir: Path = Path(os.getenv("MODEL_DIR", str(project_root / "models")))
+    model_dir: Path = Path(os.getenv("MODEL_DIR", str(project_root / "models" / "codebert-bug-classifier")))
     reports_dir: Path = project_root / "reports"
-    default_model_name: str = os.getenv("DEFAULT_MODEL_NAME", "heuristic-placeholder")
+    default_model_name: str = os.getenv("DEFAULT_MODEL_NAME", "codebert")
     random_seed: int = int(os.getenv("RANDOM_SEED", "42"))
 
 
