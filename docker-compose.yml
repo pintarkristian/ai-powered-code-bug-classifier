@@ -3,11 +3,14 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: ai-code-bug-classifier:latest
+    image: ai-powered-code-bug-classifier:latest
+    working_dir: /app
     ports:
       - "8000:8000"
     volumes:
       - .:/app
     environment:
-      MODEL_DIR: /app/models
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      PYTHONUNBUFFERED: "1"
+      PYTHONPATH: /app
+      MODEL_DIR: /app/models/codebert-bug-classifier
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000

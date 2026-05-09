@@ -1,8 +1,11 @@
-.PHONY: install test lint format train-tf train-transformer evaluate api clean
+.PHONY: install preprocess test lint format train-tf train-transformer evaluate api clean
 
 install:
 	python -m pip install --upgrade pip
 	python -m pip install -r requirements.txt
+
+preprocess:
+	python -m src.data_preprocessing --hf-dataset google/code_x_glue_cc_defect_detection --output-dir data/processed
 
 test:
 	python -m pytest tests -q

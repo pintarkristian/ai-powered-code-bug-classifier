@@ -145,7 +145,7 @@ The preprocessing pipeline normalizes the dataset into this simple format regard
 ## 7. Project Structure
 
 ```text
-ai-code-bug-classifier/
+ai-powered-code-bug-classifier/
 │
 ├── app/
 │   ├── main.py
@@ -699,49 +699,49 @@ The API tests should use mocking so they do not require the full Transformer mod
 
 ## Milestone 10 — Docker Support
 
-This milestone adds containerized execution.
+This milestone adds CPU-friendly containerized execution using Docker and Docker Compose. The Docker image uses a Python slim base image, installs `requirements.txt`, sets `PYTHONUNBUFFERED=1`, sets `PYTHONPATH=/app`, copies the project into `/app`, exposes port `8000`, and runs the FastAPI application with Uvicorn by default.
 
 ### Goal
 
-Make the project reproducible and easy to run on another machine.
+Make the project reproducible and easy to run on another machine without requiring GPU support.
 
 ### Build Docker image
 
-```bash
+```powershell
 docker compose build
 ```
 
 ### Run API
 
-```bash
+```powershell
 docker compose up api
 ```
 
 ### Run tests inside Docker
 
-```bash
+```powershell
 docker compose run --rm api make test
 ```
 
 ### Run preprocessing inside Docker
 
-```bash
+```powershell
 docker compose run --rm api make preprocess
 ```
 
 ### Train TensorFlow model inside Docker
 
-```bash
+```powershell
 docker compose run --rm api make train-tf
 ```
 
 ### Train Transformer model inside Docker
 
-```bash
+```powershell
 docker compose run --rm api make train-transformer
 ```
 
-The Docker setup is CPU-friendly by default. GPU support can be added later as a future improvement.
+The `api` service mounts the local project directory into `/app` for development. The setup is CPU-friendly by default and does not require NVIDIA Docker, CUDA, or GPU configuration.
 
 ---
 
@@ -893,26 +893,42 @@ source .venv/bin/activate
 
 # 11. Docker Workflow
 
-Docker makes the project easier to reproduce.
+Docker makes the project easier to reproduce. The `api` service is CPU-friendly, mounts the local project directory into `/app` for development, exposes port `8000`, and starts FastAPI with Uvicorn.
 
-```bash
-# Build image
+## Build the image
+
+```powershell
 docker compose build
+```
 
-# Run tests
-docker compose run --rm api make test
+## Run the API
 
-# Preprocess data
-docker compose run --rm api make preprocess
-
-# Train TensorFlow baseline
-docker compose run --rm api make train-tf
-
-# Train Transformer model
-docker compose run --rm api make train-transformer
-
-# Run API
+```powershell
 docker compose up api
+```
+
+## Run tests inside Docker
+
+```powershell
+docker compose run --rm api make test
+```
+
+## Run preprocessing inside Docker
+
+```powershell
+docker compose run --rm api make preprocess
+```
+
+## Train the TensorFlow baseline inside Docker
+
+```powershell
+docker compose run --rm api make train-tf
+```
+
+## Train the Transformer model inside Docker
+
+```powershell
+docker compose run --rm api make train-transformer
 ```
 
 Once the API is running, open:
