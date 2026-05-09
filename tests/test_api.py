@@ -2,31 +2,67 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+
+import pytest
 from fastapi.testclient import TestClient
 
-from app.main import app
-
-client = TestClient(app)
+from app.main import app, get_predictor
 
 
-def test_health_endpoint() -> None:
+class DummyPredictor:
+    """Small test double that avoids loading a real Transformer model."""
+
+    is_loaded = True
+
+    def predict(self, code: str) -> dict:
+        """Return a deterministic API-compatible prediction payload."""
+        notes: list[str] = []
+        risk_score = 0.82 if "/" in code else 0.12
+        label = "buggy" if risk_score >= 0.5 else "clean"
+
+        if "/" in code:
+            notes.append("Potential division-by-zero risk")
+
+        return {
+            "label": label,
+            "risk_score": risk_score,
+            "model_name": "test-codebert",
+            "notes": notes,
+        }
+
+
+@pytest.fixture()
+def client() -> Iterator[TestClient]:
+    """Create a test client with the predictor dependency mocked."""
+    app.dependency_overrides[get_predictor] = lambda: DummyPredictor()
+    with TestClient(app) as test_client:
+        yield test_client
+    app.dependency_overrides.clear()
+
+
+def test_health_endpoint(client: TestClient) -> None:
     response = client.get("/health")
+
     assert response.status_code == 200
-    payload = response.json()
-    assert payload["status"] == "ok"
-    assert isinstance(payload["model_loaded"], bool)
+    assert response.json() == {"status": "ok", "model_loaded": True}
 
 
-def test_predict_endpoint_accepts_valid_code() -> None:
+def test_predict_endpoint_accepts_valid_code(client: TestClient) -> None:
     response = client.post("/predict", json={"code": "def divide(a, b): return a / b"})
+
     assert response.status_code == 200
     payload = response.json()
-    assert payload["label"] in {"clean", "buggy"}
-    assert 0 <= payload["risk_score"] <= 1
-    assert "model_name" in payload
-    assert isinstance(payload["notes"], list)
+    assert payload == {
+        "label": "buggy",
+        "risk_score": 0.82,
+        "model_name": "test-codebert",
+        "notes": ["Potential division-by-zero risk"],
+    }
 
 
-def test_predict_endpoint_rejects_blank_code() -> None:
+def test_predict_endpoint_rejects_blank_code(client: TestClient) -> None:
     response = client.post("/predict", json={"code": "   "})
-    assert response.status_code == 422
+
+    assert response.status_code == 400
+    assert response.json()["detail"] == "code must not be empty"
