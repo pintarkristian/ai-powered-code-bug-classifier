@@ -1,0 +1,19 @@
+{
+  "status": "placeholder",
+  "models": {
+    "tensorflow_baseline": {
+      "accuracy": null,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "roc_auc": null
+    },
+    "pytorch_transformer": {
+      "accuracy": null,
+      "precision": null,
+      "recall": null,
+      "f1": null,
+      "roc_auc": null
+    }
+  }
+}

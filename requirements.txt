@@ -1,0 +1,30 @@
+# Core
+pandas
+numpy
+scikit-learn
+
+# Deep learning
+tensorflow
+torch
+transformers
+datasets
+accelerate
+evaluate
+
+# API
+fastapi
+uvicorn
+pydantic
+python-multipart
+
+# Evaluation and plots
+matplotlib
+
+# Testing and quality
+pytest
+httpx
+black
+ruff
+
+# Development
+jupyter
