@@ -13,7 +13,7 @@
 
 ## 1. Project Overview
 
-**AI-Powered Code Bug Classifier** is a portfolio-ready Python project designed to demonstrate practical skills in Machine Learning, Deep Learning, AI, MLOps, API development, Docker, and software engineering best practices.
+**AI-Powered Code Bug Classifier** is a AI, Machine Learning, Deep Learning, MLOps, API development, Docker project.
 
 The goal of this project is to build a system that receives a source-code snippet and predicts whether the snippet is likely to be **clean** or **potentially buggy/risky**. The project compares two modeling approaches:
 
@@ -21,8 +21,6 @@ The goal of this project is to build a system that receives a source-code snippe
 2. A **PyTorch Transformer model** fine-tuned using a CodeBERT-style architecture for code understanding.
 
 The project also includes Pandas-based preprocessing, static code feature extraction, evaluation reports, a FastAPI inference service, Docker support, tests, and GitHub Actions CI.
-
-This repository is intended as a **CV reference project**. It is designed to look like a real machine-learning engineering project rather than a single notebook experiment.
 
 ---
 
@@ -1309,13 +1307,3 @@ MIT License
 ```
 
 ---
-
-# 25. Author
-
-Created as a Python Machine Learning and AI portfolio project.
-
-Recommended repository name:
-
-```text
-ai-code-bug-classifier
-```
