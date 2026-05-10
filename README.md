@@ -13,8 +13,6 @@
 
 ## 1. Project Overview
 
-**AI-Powered Code Bug Classifier** is a AI, Machine Learning, Deep Learning, MLOps, API development, Docker project.
-
 The goal of this project is to build a system that receives a source-code snippet and predicts whether the snippet is likely to be **clean** or **potentially buggy/risky**. The project compares two modeling approaches:
 
 1. A **TensorFlow/Keras baseline model** trained on tokenized source code.
