@@ -5,7 +5,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import Annotated
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends, FastAPI, HTTPException, Response, status
 
 from app.schemas import HealthResponse, PredictionRequest, PredictionResponse
 from src.config import get_settings
@@ -37,9 +37,14 @@ PredictorDependency = Annotated[CodeBugPredictor, Depends(get_predictor)]
 
 
 @app.get("/health", response_model=HealthResponse)
-def health(predictor: PredictorDependency) -> HealthResponse:
+def health(predictor: PredictorDependency, response: Response) -> HealthResponse:
     """Return service health and whether a trained model was loaded."""
-    return HealthResponse(model_loaded=bool(getattr(predictor, "is_loaded", False)))
+    model_loaded = bool(getattr(predictor, "is_loaded", False))
+    if not model_loaded:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
+        return HealthResponse(status="degraded", model_loaded=False)
+
+    return HealthResponse(status="ok", model_loaded=True)
 
 
 @app.post("/predict", response_model=PredictionResponse)

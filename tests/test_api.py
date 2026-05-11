@@ -13,7 +13,8 @@ from app.main import app, get_predictor
 class DummyPredictor:
     """Small test double that avoids loading a real Transformer model."""
 
-    is_loaded = True
+    def __init__(self, is_loaded: bool = True) -> None:
+        self.is_loaded = is_loaded
 
     def predict(self, code: str) -> dict:
         """Return a deterministic API-compatible prediction payload."""
@@ -41,11 +42,21 @@ def client() -> Iterator[TestClient]:
     app.dependency_overrides.clear()
 
 
-def test_health_endpoint(client: TestClient) -> None:
+def test_health_endpoint_reports_ok_when_model_loaded(client: TestClient) -> None:
     response = client.get("/health")
 
     assert response.status_code == 200
     assert response.json() == {"status": "ok", "model_loaded": True}
+
+
+def test_health_endpoint_reports_degraded_when_model_missing() -> None:
+    app.dependency_overrides[get_predictor] = lambda: DummyPredictor(is_loaded=False)
+    with TestClient(app) as test_client:
+        response = test_client.get("/health")
+    app.dependency_overrides.clear()
+
+    assert response.status_code == 503
+    assert response.json() == {"status": "degraded", "model_loaded": False}
 
 
 def test_predict_endpoint_accepts_valid_code(client: TestClient) -> None:
