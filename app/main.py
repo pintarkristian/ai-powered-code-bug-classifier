@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from functools import lru_cache
 from typing import Annotated
 
@@ -11,6 +12,7 @@ from app.schemas import HealthResponse, PredictionRequest, PredictionResponse
 from src.config import get_settings
 from src.predict import CodeBugPredictor
 
+LOGGER = logging.getLogger(__name__)
 settings = get_settings()
 
 app = FastAPI(
@@ -63,5 +65,24 @@ def predict(
             detail="code must not be empty",
         )
 
-    result = predictor.predict(request.code)
+    try:
+        result = predictor.predict(request.code)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        ) from exc
+    except RuntimeError as exc:
+        LOGGER.warning("Prediction service unavailable: %s", exc)
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="prediction service unavailable",
+        ) from exc
+    except Exception as exc:
+        LOGGER.exception("Unexpected prediction failure")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="prediction failed",
+        ) from exc
+
     return PredictionResponse(**result)
