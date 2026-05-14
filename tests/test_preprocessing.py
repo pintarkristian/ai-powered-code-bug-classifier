@@ -96,6 +96,18 @@ def test_clean_dataset_removes_short_snippets() -> None:
     assert cleaned["code"].tolist() == ["def long_enough(): return 1"]
 
 
+def test_clean_dataset_rejects_max_length_smaller_than_min_length() -> None:
+    raw = pd.DataFrame(
+        {
+            "code": ["def long_enough(): return 1"],
+            "label": [0],
+        }
+    )
+
+    with pytest.raises(ValueError, match="max_code_length must be greater than or equal"):
+        clean_dataset(raw, min_code_length=20, max_code_length=10)
+
+
 def test_clean_dataset_strips_truncates_and_converts_labels() -> None:
     long_code = "  " + "a" * (MAX_CODE_LENGTH + 25) + "  "
     raw = pd.DataFrame(

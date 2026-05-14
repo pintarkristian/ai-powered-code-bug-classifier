@@ -150,6 +150,8 @@ def clean_dataset(
         raise ValueError("min_code_length must be non-negative")
     if max_code_length <= 0:
         raise ValueError("max_code_length must be positive")
+    if max_code_length < min_code_length:
+        raise ValueError("max_code_length must be greater than or equal to min_code_length")
 
     cleaned = dataframe.copy()
     cleaned = cleaned.dropna(subset=["code", "label"])
