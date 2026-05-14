@@ -150,6 +150,8 @@ def clean_dataset(
         raise ValueError("min_code_length must be non-negative")
     if max_code_length <= 0:
         raise ValueError("max_code_length must be positive")
+    if max_code_length < min_code_length:
+        raise ValueError("max_code_length must be greater than or equal to min_code_length")
 
     cleaned = dataframe.copy()
     cleaned = cleaned.dropna(subset=["code", "label"])
@@ -159,7 +161,17 @@ def clean_dataset(
     cleaned["label"] = cleaned["label"].astype(int)
     cleaned = cleaned[cleaned["code"].str.len() >= min_code_length]
     cleaned["code"] = cleaned["code"].str.slice(0, max_code_length)
-    cleaned = cleaned.drop_duplicates(subset=["code"], keep="first")
+
+    label_counts_by_code = cleaned.groupby("code")["label"].nunique()
+    conflicting_codes = label_counts_by_code[label_counts_by_code > 1]
+    if not conflicting_codes.empty:
+        examples = ", ".join(repr(code) for code in conflicting_codes.index[:3])
+        raise ValueError(
+            "Conflicting labels found for duplicate code snippets: "
+            f"{examples}. Resolve duplicate labels before preprocessing."
+        )
+
+    cleaned = cleaned.drop_duplicates(subset=["code", "label"], keep="first")
     cleaned = cleaned[["code", "label"]]
     return cleaned.reset_index(drop=True)
 

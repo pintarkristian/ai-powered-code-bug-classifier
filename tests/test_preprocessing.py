@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import pandas as pd
+import pytest
 
 from src.data_preprocessing import (
     MAX_CODE_LENGTH,
@@ -45,7 +46,28 @@ def test_clean_dataset_removes_missing_values() -> None:
     assert cleaned.loc[0, "code"] == "def valid_function(): return 1"
 
 
-def test_clean_dataset_removes_duplicate_code_snippets() -> None:
+def test_clean_dataset_removes_duplicate_code_snippets_with_matching_labels() -> None:
+    raw = pd.DataFrame(
+        {
+            "code": [
+                "def duplicate(): return 1",
+                "def duplicate(): return 1",
+                "def unique_function(): return 2",
+            ],
+            "label": [0, 0, 1],
+        }
+    )
+
+    cleaned = clean_dataset(raw)
+
+    assert cleaned["code"].tolist() == [
+        "def duplicate(): return 1",
+        "def unique_function(): return 2",
+    ]
+    assert cleaned["label"].tolist() == [0, 1]
+
+
+def test_clean_dataset_rejects_duplicate_code_snippets_with_conflicting_labels() -> None:
     raw = pd.DataFrame(
         {
             "code": [
@@ -57,13 +79,8 @@ def test_clean_dataset_removes_duplicate_code_snippets() -> None:
         }
     )
 
-    cleaned = clean_dataset(raw)
-
-    assert cleaned["code"].tolist() == [
-        "def duplicate(): return 1",
-        "def unique_function(): return 2",
-    ]
-    assert cleaned["label"].tolist() == [0, 1]
+    with pytest.raises(ValueError, match="Conflicting labels found"):
+        clean_dataset(raw)
 
 
 def test_clean_dataset_removes_short_snippets() -> None:
@@ -77,6 +94,18 @@ def test_clean_dataset_removes_short_snippets() -> None:
     cleaned = clean_dataset(raw)
 
     assert cleaned["code"].tolist() == ["def long_enough(): return 1"]
+
+
+def test_clean_dataset_rejects_max_length_smaller_than_min_length() -> None:
+    raw = pd.DataFrame(
+        {
+            "code": ["def long_enough(): return 1"],
+            "label": [0],
+        }
+    )
+
+    with pytest.raises(ValueError, match="max_code_length must be greater than or equal"):
+        clean_dataset(raw, min_code_length=20, max_code_length=10)
 
 
 def test_clean_dataset_strips_truncates_and_converts_labels() -> None:
