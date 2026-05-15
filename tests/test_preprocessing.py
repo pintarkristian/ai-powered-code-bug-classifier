@@ -32,6 +32,20 @@ def test_normalize_columns_infers_codexglue_schema() -> None:
     assert normalized.loc[0, "code"] == "int main() { return 0; }"
 
 
+def test_normalize_columns_rejects_missing_explicit_code_column() -> None:
+    raw = pd.DataFrame({"func": ["int main() { return 0; }"], "target": [0]})
+
+    with pytest.raises(KeyError, match="missing_code"):
+        normalize_columns(raw, code_column="missing_code", label_column="target")
+
+
+def test_normalize_columns_rejects_missing_explicit_label_column() -> None:
+    raw = pd.DataFrame({"func": ["int main() { return 0; }"], "target": [0]})
+
+    with pytest.raises(KeyError, match="missing_label"):
+        normalize_columns(raw, code_column="func", label_column="missing_label")
+
+
 def test_clean_dataset_removes_missing_values() -> None:
     raw = pd.DataFrame(
         {
@@ -94,6 +108,18 @@ def test_clean_dataset_removes_short_snippets() -> None:
     cleaned = clean_dataset(raw)
 
     assert cleaned["code"].tolist() == ["def long_enough(): return 1"]
+
+
+def test_clean_dataset_rejects_max_length_smaller_than_min_length() -> None:
+    raw = pd.DataFrame(
+        {
+            "code": ["def long_enough(): return 1"],
+            "label": [0],
+        }
+    )
+
+    with pytest.raises(ValueError, match="max_code_length must be greater than or equal"):
+        clean_dataset(raw, min_code_length=20, max_code_length=10)
 
 
 def test_clean_dataset_strips_truncates_and_converts_labels() -> None:
