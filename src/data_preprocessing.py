@@ -296,6 +296,10 @@ def split_dataset(
     """
     if dataframe.empty:
         raise ValueError("Cannot split an empty dataframe")
+    if len(dataframe) < 3:
+        raise ValueError(
+            "Cannot create train, validation, and test splits with fewer than 3 rows"
+        )
     if any(size <= 0 for size in (train_size, valid_size, test_size)):
         raise ValueError("train_size, valid_size, and test_size must all be positive")
     if abs((train_size + valid_size + test_size) - 1.0) > 1e-6:

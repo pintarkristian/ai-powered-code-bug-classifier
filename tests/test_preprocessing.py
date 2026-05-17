@@ -155,6 +155,37 @@ def test_split_dataset_uses_stratification() -> None:
     assert test["label"].value_counts().to_dict() == {0: 5, 1: 5}
 
 
+def test_split_dataset_rejects_too_few_rows_for_all_splits() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "code": ["def first(): return 1", "def second(): return 2"],
+            "label": [0, 1],
+        }
+    )
+
+    with pytest.raises(ValueError, match="fewer than 3 rows"):
+        split_dataset(dataframe)
+
+
+def test_split_dataset_keeps_tiny_single_class_splits_non_empty() -> None:
+    dataframe = pd.DataFrame(
+        {
+            "code": [
+                "def first(): return 1",
+                "def second(): return 2",
+                "def third(): return 3",
+            ],
+            "label": [0, 0, 0],
+        }
+    )
+
+    train, valid, test = split_dataset(dataframe)
+
+    assert len(train) == 1
+    assert len(valid) == 1
+    assert len(test) == 1
+
+
 def test_save_splits_creates_output_files(tmp_path) -> None:
     train = pd.DataFrame({"code": ["def train_fn(): return 1"], "label": [0]})
     valid = pd.DataFrame({"code": ["def valid_fn(): return 1"], "label": [1]})
