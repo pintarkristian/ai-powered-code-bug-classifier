@@ -241,11 +241,10 @@ class CodeBugPredictor:
         """Detect simple zero-check patterns for a denominator variable."""
         escaped = re.escape(variable_name)
         zero_check_patterns = (
-            rf"\b{escaped}\s*(?:!=|==|>|>=)\s*0\b",
-            rf"\b0\s*(?:!=|==|<|<=)\s*{escaped}\b",
-            rf"\bif\s+{escaped}\s*:",
-            rf"\bassert\s+{escaped}\b",
-            rf"\bif\s+not\s+{escaped}\s*:",
+            rf"\b{escaped}\s*(?:!=|>|>=)\s*0\b",
+            rf"\b0\s*(?:!=|<|<=)\s*{escaped}\b",
+            rf"\bassert\s+{escaped}\s*!=\s*0\b",
+            rf"\bassert\s+0\s*!=\s*{escaped}\b",
         )
         return any(re.search(pattern, code) for pattern in zero_check_patterns)
 
